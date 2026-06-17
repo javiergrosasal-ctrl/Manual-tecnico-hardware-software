@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Técnico de Hardware y Software</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            black: '#030712',
+                            dark: '#0b1329',
+                            darkBlue: '#1c2541',
+                            electricBlue: '#3a86ff',
+                            neonCyan: '#00f0ff',
+                            neonPurple: '#8b5cf6',
+                            grayDark: '#1e293b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .neon-border:hover {
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.35);
+            border-color: rgba(6, 182, 212, 0.5);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a86ff;
+        }
+    </style>
+</head>
+<body class="bg-brand-black text-slate-100 font-sans selection:bg-brand-neonCyan selection:text-brand-black">
+
+    <!-- APP WRAPPER -->
+    <div class="min-h-screen flex flex-col md:flex-row">
+
+        <!-- SIDEBAR NAVEGACIÓN (INDICE INTERACTIVO) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-slate-950/95 border-r border-slate-800/60 flex flex-col justify-between transition-transform duration-300 transform -translate-x-full lg:translate-x-0">
+            <div class="p-5 flex flex-col h-full">
+                <!-- Header Sidebar -->
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-800">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-brand-electricBlue/10 rounded-lg text-brand-neonCyan">
+                            <i class="fa-solid fa-microchip text-xl animate-pulse"></i>
+                        </div>
+                        <span class="font-display font-bold text-sm tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-brand-neonCyan to-brand-neonPurple">TECH-MANUAL</span>
+                    </div>
+                    <button onclick="toggleSidebar()" class="lg:hidden text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Buscador de Índice -->
+                <div class="relative mb-4">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </span>
+                    <input type="text" id="index-search" onkeyup="filterIndex()" placeholder="Buscar en el índice..." class="w-full pl-9 pr-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-brand-neonCyan transition">
+                </div>
+
+                <!-- Lista de Enlaces -->
+                <div class="flex-1 overflow-y-auto space-y-4 pr-1 scrollbar-thin" id="index-list">
+                    <!-- Categoría Hardware -->
+                    <div>
+                        <h4 class="text-[11px] font-bold tracking-wider text-slate-500 uppercase mb-2 px-2 flex items-center justify-between">
+                            <span>HARDWARE</span>
+                            <i class="fa-solid fa-gears text-[10px]"></i>
+                        </h4>
+                        <ul class="space-y-1 text-xs">
+                            <li><a href="#cpu" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonCyan hover:bg-slate-900/50 transition">Procesador (CPU)</a></li>
+                            <li><a href="#ram" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonCyan hover:bg-slate-900/50 transition">Memoria RAM</a></li>
+                            <li><a href="#storage" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonCyan hover:bg-slate-900/50 transition">Almacenamiento (HDD/SSD)</a></li>
+                            <li><a href="#gpu" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonCyan hover:bg-slate-900/50 transition">Tarjetas Gráficas</a></li>
+                            <li><a href="#motherboard" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonCyan hover:bg-slate-900/50 transition">Tarjeta Madre & Chipsets</a></li>
+                            <li><a href="#bios" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonCyan hover:bg-slate-900/50 transition">BIOS vs UEFI</a></li>
+                            <li><a href="#psu" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonCyan hover:bg-slate-900/50 transition">Fuente de Poder</a></li>
+                            <li><a href="#cooling" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonCyan hover:bg-slate-900/50 transition">Sistemas de Refrigeración</a></li>
+                            <li><a href="#peripherals" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonCyan hover:bg-slate-900/50 transition">Otros Dispositivos de Red/E-S</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Categoría Software -->
+                    <div>
+                        <h4 class="text-[11px] font-bold tracking-wider text-slate-500 uppercase mb-2 px-2 flex items-center justify-between">
+                            <span>SOFTWARE</span>
+                            <i class="fa-solid fa-code text-[10px]"></i>
+                        </h4>
+                        <ul class="space-y-1 text-xs">
+                            <li><a href="#os" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonPurple hover:bg-slate-900/50 transition">Sistemas Operativos</a></li>
+                            <li><a href="#browsers" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonPurple hover:bg-slate-900/50 transition">Navegadores Web</a></li>
+                            <li><a href="#office" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonPurple hover:bg-slate-900/50 transition">Suites Ofimáticas</a></li>
+                            <li><a href="#mobile-os" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonPurple hover:bg-slate-900/50 transition">Sistemas Operativos Móviles</a></li>
+                            <li><a href="#design" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonPurple hover:bg-slate-900/50 transition">Edición Gráfica</a></li>
+                            <li><a href="#dev" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonPurple hover:bg-slate-900/50 transition">Programación e IDEs</a></li>
+                            <li><a href="#db" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonPurple hover:bg-slate-900/50 transition">Bases de Datos</a></li>
+                            <li><a href="#virtualization" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonPurple hover:bg-slate-900/50 transition">Virtualización</a></li>
+                            <li><a href="#archivers" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-brand-neonPurple hover:bg-slate-900/50 transition">Compresores y Nube</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Recursos multimedia -->
+                    <div>
+                        <h4 class="text-[11px] font-bold tracking-wider text-slate-500 uppercase mb-2 px-2">MULTIMEDIA</h4>
+                        <ul class="space-y-1 text-xs">
+                            <li><a href="#video-tutorials" class="index-item flex items-center gap-2 px-2 py-1.5 rounded text-slate-400 hover:text-emerald-400 hover:bg-slate-900/50 transition">Video Tutoriales</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Footer del Sidebar -->
+                <div class="mt-4 pt-4 border-t border-slate-800 text-[10px] text-slate-500 flex justify-between items-center">
+                    <span>Versión 2.5 (2026)</span>
+                    <span class="inline-block w-2.5 h-2.5 bg-green-500 rounded-full animate-ping"></span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="flex-1 lg:pl-72 min-w-0 flex flex-col">
+            
+            <!-- HEADER DE CONTROL STICKY -->
+            <header class="sticky top-0 z-40 w-full glass border-b border-slate-800/80 px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <!-- Hamburger menú móvil -->
+                    <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg bg-slate-900 text-slate-300 hover:text-white">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <!-- Título Global del Dashboard -->
+                    <div class="hidden sm:block">
+                        <span class="text-xs text-slate-400 font-mono">PANEL DE CONSULTA TÉCNICA</span>
+                        <h1 class="text-sm font-semibold text-slate-100 flex items-center gap-2">
+                            Manual Integrado de Sistemas <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-brand-neonCyan border border-brand-neonCyan/30">ONLINE</span>
+                        </h1>
+                    </div>
+                </div>
+
+                <!-- Buscador de Contenidos Principal -->
+                <div class="relative w-full max-w-xs sm:max-w-md">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                    </span>
+                    <input type="text" id="main-search" onkeyup="searchContent()" placeholder="Buscar componentes, guías o soluciones..." class="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-neonCyan focus:ring-1 focus:ring-brand-neonCyan transition">
+                </div>
+            </header>
+
+            <!-- CONTENIDO DE SECCIONES -->
+            <div class="p-6 md:p-10 space-y-20 max-w-7xl mx-auto w-full">
+
+                <!-- 1. PORTADA HERO SECTION -->
+                <section id="hero" class="relative rounded-3xl overflow-hidden glass border border-slate-800/80 p-8 md:p-16 flex flex-col justify-center items-center text-center shadow-2xl">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-brand-neonPurple/10 via-transparent to-brand-neonCyan/10 pointer-events-none"></div>
+                    <div class="absolute top-10 right-10 w-48 h-48 bg-brand-neonCyan/5 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute bottom-10 left-10 w-48 h-48 bg-brand-neonPurple/5 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <span class="px-3 py-1 bg-slate-900 border border-slate-800 text-slate-400 text-xs rounded-full uppercase tracking-widest mb-4">EDICIÓN TÉCNICA INTERACTIVA</span>
+                    <h1 class="font-display font-black text-4xl md:text-6xl tracking-tight leading-none mb-6">
+                        MANUAL TÉCNICO DE <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-neonCyan via-brand-electricBlue to-brand-neonPurple">HARDWARE Y SOFTWARE</span>
+                    </h1>
+                    <p class="max-w-2xl text-slate-400 text-sm md:text-base mb-8 leading-relaxed">
+                        Explora la enciclopedia tecnológica más completa: análisis de arquitectura, comparativas de rendimiento directo, diagnóstico profundo de problemas y soluciones profesionales integradas paso a paso.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-4 items-center">
+                        <a href="#cpu" class="px-6 py-3 bg-brand-electricBlue hover:bg-brand-electricBlue/80 text-white font-medium text-sm rounded-xl transition shadow-[0_0_20px_rgba(58,134,255,0.4)] flex items-center gap-2">
+                            <span>Comenzar Exploración</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a href="#video-tutorials" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-slate-300 font-medium text-sm rounded-xl border border-slate-800 transition flex items-center gap-2">
+                            <i class="fa-solid fa-play text-red-500"></i>
+                            <span>Ver Video Guías</span>
+                        </a>
+                    </div>
+
+                    <!-- Tarjetas de Estadísticas del Sistema -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 w-full max-w-4xl pt-8 border-t border-slate-800">
+                        <div class="p-4 bg-slate-900/50 rounded-xl border border-slate-800/40">
+                            <span class="block text-xl font-bold font-display text-brand-neonCyan">30+</span>
+                            <span class="text-[11px] text-slate-500 uppercase">Hardware Analizado</span>
+                        </div>
+                        <div class="p-4 bg-slate-900/50 rounded-xl border border-slate-800/40">
+                            <span class="block text-xl font-bold font-display text-brand-neonPurple">20+</span>
+                            <span class="text-[11px] text-slate-500 uppercase">Sistemas y Software</span>
+                        </div>
+                        <div class="p-4 bg-slate-900/50 rounded-xl border border-slate-800/40">
+                            <span class="block text-xl font-bold font-display text-emerald-400">100%</span>
+                            <span class="text-[11px] text-slate-500 uppercase">Soluciones y Fallas</span>
+                        </div>
+                        <div class="p-4 bg-slate-900/50 rounded-xl border border-slate-800/40">
+                            <span class="block text-xl font-bold font-display text-yellow-400">4K UHD</span>
+                            <span class="text-[11px] text-slate-500 uppercase">Guía de Ensamble</span>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- HARDWARE SECTION HEADER -->
+                <div class="border-b border-slate-800 pb-4">
+                    <h2 class="text-2xl font-display font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-neonCyan to-brand-electricBlue flex items-center gap-3">
+                        <i class="fa-solid fa-screwdriver-wrench"></i> I. MANUAL TÉCNICO DE HARDWARE
+                    </h2>
+                    <p class="text-slate-400 text-xs mt-1">Especificaciones estructurales, funcionamiento y comparativas físicas detalladas.</p>
+                </div>
+
+
+                <!-- PROCESADOR (CPU) -->
+                <section id="cpu" class="tech-section bg-slate-900/30 rounded-2xl p-6 border border-slate-800 scroll-mt-24">
+                    <!-- FAQ Preview Block -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 text-xs bg-slate-950/70 p-4 rounded-xl border border-slate-800/50">
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Qué es?</p><p class="text-slate-400 mt-1">El cerebro del equipo que ejecuta cálculos y lógica.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Para qué sirve?</p><p class="text-slate-400 mt-1">Interpreta instrucciones de programas y maneja periféricos.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Cómo funciona?</p><p class="text-slate-400 mt-1">Sigue el ciclo Fetch-Decode-Execute a escala de gigahercios.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Dónde se utiliza?</p><p class="text-slate-400 mt-1">En placas base de PC, smartphones, servidores y consolas.</p></div>
+                        <div class="p-2"><p class="font-bold text-brand-neonCyan">¿Por qué es vital?</p><p class="text-slate-400 mt-1">Determina el límite general de procesamiento del sistema.</p></div>
+                    </div>
+
+                    <div class="flex flex-col lg:flex-row gap-8 items-start mb-6">
+                        <div class="flex-1">
+                            <span class="text-xs font-mono text-brand-neonCyan bg-brand-neonCyan/10 px-3 py-1 rounded-full">Procesador (CPU)</span>
+                            <h3 class="text-xl font-bold font-display mt-2 mb-4">Unidad Central de Procesamiento</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                                El procesador procesa los datos binarios entrantes manipulando millones de transistores en silicio para coordinar todas las operaciones que el usuario y el sistema operativo solicitan.
+                            </p>
+                            <h4 class="text-sm font-semibold text-slate-100 mb-2">Características Técnicas Clave:</h4>
+                            <ul class="grid grid-cols-2 gap-2 text-xs text-slate-400">
+                                <li><strong class="text-slate-200">Arquitectura:</strong> x86 / x64, ARM</li>
+                                <li><strong class="text-slate-200">Núcleos e Hilos:</strong> Físicos y Lógicos (Hyper-Threading / SMT)</li>
+                                <li><strong class="text-slate-200">Caché:</strong> Niveles L1, L2 y L3 de latencia ultra baja</li>
+                                <li><strong class="text-slate-200">Frecuencia:</strong> Base y Boost en GHz</li>
+                                <li><strong class="text-slate-200">Socket:</strong> Tipo LGA o AM (Matriz de contactos de placa base)</li>
+                                <li><strong class="text-slate-200">TDP:</strong> Potencia de Diseño Térmico (Watts)</li>
+                            </ul>
+                        </div>
+                        <div class="w-full lg:w-80">
+                            <img src="https://images.unsplash.com/photo-1591453089816-0fbb971b454c?auto=format&fit=crop&w=400&q=80" alt="CPU silicio" class="rounded-xl border border-slate-800 shadow-md">
+                        </div>
+                    </div>
+
+                    <!-- PROS & CONS / FALLAS -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-800">
+                            <h5 class="text-sm font-bold text-emerald-400 mb-2"><i class="fa-solid fa-circle-check"></i> Ventajas y Limitaciones</h5>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <div><strong class="text-slate-200">Ventajas:</strong> Altamente flexible, alta velocidad mononúcleo para tareas del SO.</div>
+                                <div><strong class="text-slate-300">Desventajas:</strong> Sensible a temperatura extrema, costoso y requiere sistemas de enfriamiento robustos.</div>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-800">
+                            <h5 class="text-sm font-bold text-red-400 mb-2"><i class="fa-solid fa-triangle-exclamation"></i> Diagnóstico y Soluciones</h5>
+                            <div class="text-xs space-y-1">
+                                <p><strong class="text-slate-200">Problema:</strong> Temperatura de operación excesiva (Thermal Throttling).</p>
+                                <p><strong class="text-teal-400">Solución:</strong> Cambiar la pasta térmica, verificar el flujo de aire y comprobar la velocidad de la bomba de refrigeración líquida o ventilador.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COMPARATIVA INTEGRADA (Intel vs AMD) -->
+                    <div class="mt-8 pt-8 border-t border-slate-800">
+                        <h4 class="text-md font-bold text-slate-200 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-scale-balanced text-brand-neonCyan"></i> Comparativa Directa: Intel vs AMD
+                        </h4>
+                        <p class="text-xs text-slate-400 mb-4">
+                            Análisis comparativo de los dos titanes de la fabricación de microprocesadores para escritorio y servidores domésticos.
+                        </p>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-slate-400 bg-slate-950/40">
+                                        <th class="p-3">Atributo</th>
+                                        <th class="p-3">Intel Core (ej. i9-14900K)</th>
+                                        <th class="p-3">AMD Ryzen (ej. 9 7950X3D)</th>
+                                        <th class="p-3">Etiqueta Sugerida</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800">
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Arquitectura Híbrida</td>
+                                        <td class="p-3 text-slate-400">Sí (P-Cores + E-Cores en arquitectura big.LITTLE)</td>
+                                        <td class="p-3 text-slate-400">No (Todos los núcleos son de alto rendimiento homogéneos)</td>
+                                        <td class="p-3"><span class="px-2 py-0.5 bg-brand-electricBlue/20 text-brand-neonCyan text-[10px] rounded">Productividad en multitarea</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Gaming Puro</td>
+                                        <td class="p-3 text-slate-400">Excelente IPC y frecuencias estables elevadas</td>
+                                        <td class="p-3 text-slate-400">Líder indiscutible con tecnología caché vertical (3D V-Cache)</td>
+                                        <td class="p-3"><span class="px-2 py-0.5 bg-brand-neonPurple/20 text-brand-neonPurple text-[10px] rounded">Mejor para Gaming</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Eficiencia Energética</td>
+                                        <td class="p-3 text-slate-400">TDP elevado bajo cargas sostenidas pesadas (PL2 > 250W)</td>
+                                        <td class="p-3 text-slate-400">Excelente eficiencia energética gracias a nodos TSMC de 5nm/4nm</td>
+                                        <td class="p-3"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] rounded">Mayor Rendimiento/Vatio</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 bg-slate-950/80 rounded-xl border border-slate-800 mt-4 text-xs">
+                            <span class="font-bold text-slate-200">¿Cuál es Mejor?</span> 
+                            <p class="text-slate-400 mt-1">
+                                <strong class="text-brand-neonCyan">AMD Ryzen X3D</strong> es el rey absoluto en gaming debido a su caché masiva tridimensional L3. Sin embargo, para flujos de trabajo profesionales pesados donde se explota al máximo la arquitectura multinúcleo distribuida (edición de vídeo pesada, renderizado en tiempo real), la tecnología híbrida de <strong class="text-brand-neonPurple">Intel Core</strong> ofrece un rendimiento excepcional.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- MEMORIA RAM -->
+                <section id="ram" class="tech-section bg-slate-900/30 rounded-2xl p-6 border border-slate-800 scroll-mt-24">
+                    <!-- FAQ Preview Block -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 text-xs bg-slate-950/70 p-4 rounded-xl border border-slate-800/50">
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Qué es?</p><p class="text-slate-400 mt-1">Memoria de acceso aleatorio volátil e instantánea.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Para qué sirve?</p><p class="text-slate-400 mt-1">Mantiene activos los datos de apps abiertos por la CPU.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Cómo funciona?</p><p class="text-slate-400 mt-1">Carga celdas de condensadores direccionados por filas/columnas.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Dónde se utiliza?</p><p class="text-slate-400 mt-1">En ranuras DIMM/SO-DIMM en tarjetas madre de cómputo.</p></div>
+                        <div class="p-2"><p class="font-bold text-brand-neonCyan">¿Por qué es vital?</p><p class="text-slate-400 mt-1">Evita que la PC deba recurrir al almacenamiento persistente lento.</p></div>
+                    </div>
+
+                    <div class="flex flex-col lg:flex-row gap-8 items-start mb-6">
+                        <div class="flex-1">
+                            <span class="text-xs font-mono text-brand-neonCyan bg-brand-neonCyan/10 px-3 py-1 rounded-full">Memoria Volátil</span>
+                            <h3 class="text-xl font-bold font-display mt-2 mb-4">Memoria RAM (Random Access Memory)</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                                Provee almacenamiento temporal de transferencia masiva y latencia baja para la CPU. Al apagar el equipo, todos los datos almacenados en sus chips se vacían por completo.
+                            </p>
+                            <h4 class="text-sm font-semibold text-slate-100 mb-2">Características Técnicas Clave:</h4>
+                            <ul class="grid grid-cols-2 gap-2 text-xs text-slate-400">
+                                <li><strong class="text-slate-200">Generación:</strong> DDR4 / DDR5</li>
+                                <li><strong class="text-slate-200">Frecuencia:</strong> Megatransferencias por segundo (MT/s) o MHz</li>
+                                <li><strong class="text-slate-200">Latencia (CAS):</strong> Tiempos de retardo en ciclos de reloj (CL)</li>
+                                <li><strong class="text-slate-200">Capacidad:</strong> Desde 8GB hasta 128GB+ por kit</li>
+                                <li><strong class="text-slate-200">Canal:</strong> Single, Dual o Quad Channel para multiplicar el bus</li>
+                            </ul>
+                        </div>
+                        <div class="w-full lg:w-80">
+                            <img src="https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?auto=format&fit=crop&w=400&q=80" alt="RAM Stick" class="rounded-xl border border-slate-800 shadow-md">
+                        </div>
+                    </div>
+
+                    <!-- PROS/CONS & FALLAS -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-800">
+                            <h5 class="text-sm font-bold text-emerald-400 mb-2"><i class="fa-solid fa-circle-check"></i> Ventajas y Límites</h5>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <div><strong class="text-slate-200">Ventajas:</strong> Permite multitarea masiva fluida y altas tasas de FPS mínimos.</div>
+                                <div><strong class="text-slate-300">Desventajas:</strong> Pérdida de datos total sin corriente eléctrica, precio inestable de semiconductores.</div>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-800">
+                            <h5 class="text-sm font-bold text-red-400 mb-2"><i class="fa-solid fa-triangle-exclamation"></i> Diagnóstico y Soluciones</h5>
+                            <div class="text-xs space-y-1">
+                                <p><strong class="text-slate-200">Falla:</strong> Pantallazos azules constantes (BSOD) con códigos de memoria erróneos.</p>
+                                <p><strong class="text-teal-400">Solución:</strong> Ejecutar MemTest86, limpiar los contactos dorados del módulo con goma de borrar suave, o desactivar perfiles XMP/EXPO inestables en BIOS.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COMPARATIVA INTEGRADA (DDR4 vs DDR5) -->
+                    <div class="mt-8 pt-8 border-t border-slate-800">
+                        <h4 class="text-md font-bold text-slate-200 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-scale-balanced text-brand-neonCyan"></i> Comparativa Generacional: DDR4 vs DDR5
+                        </h4>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-slate-400 bg-slate-950/40">
+                                        <th class="p-3">Característica</th>
+                                        <th class="p-3">DDR4</th>
+                                        <th class="p-3">DDR5</th>
+                                        <th class="p-3">Estado Recomendado</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800">
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Frecuencias estándar</td>
+                                        <td class="p-3 text-slate-400">2133 MHz - 3600 MHz</td>
+                                        <td class="p-3 text-slate-400">4800 MHz - 8000+ MHz</td>
+                                        <td class="p-3"><span class="px-2 py-0.5 bg-brand-neonCyan/20 text-brand-neonCyan text-[10px] rounded">DDR5: El doble de ancho de banda</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Voltaje de operación</td>
+                                        <td class="p-3 text-slate-400">1.2V</td>
+                                        <td class="p-3 text-slate-400">1.1V (Menor consumo y gestión de energía integrada PMIC en el chip)</td>
+                                        <td class="p-3"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] rounded">DDR5: Más Eficiente</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Compatibilidad física</td>
+                                        <td class="p-3 text-slate-400">Ranura estándar pinout clásica</td>
+                                        <td class="p-3 text-slate-400">Nueva muesca física (Incompatible con placas DDR4)</td>
+                                        <td class="p-3"><span class="px-2 py-0.5 bg-red-500/20 text-red-400 text-[10px] rounded">Incompatibles entre sí</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 bg-slate-950/80 rounded-xl border border-slate-800 mt-4 text-xs">
+                            <span class="font-bold text-slate-200">¿Cuál es Mejor?</span> 
+                            <p class="text-slate-400 mt-1">
+                                <strong class="text-brand-neonCyan">DDR5 es la mejor opción tecnológica</strong> por su velocidad de transferencia, gestión de energía on-die y preparación para el hardware del futuro. Sin embargo, <strong class="text-slate-300">DDR4</strong> sigue siendo el estándar más económico para construir computadoras de oficina u hogareñas de bajo presupuesto.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ALMACENAMIENTO (HDD / SSD SATA / NVME) -->
+                <section id="storage" class="tech-section bg-slate-900/30 rounded-2xl p-6 border border-slate-800 scroll-mt-24">
+                    <!-- FAQ Preview Block -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 text-xs bg-slate-950/70 p-4 rounded-xl border border-slate-800/50">
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Qué es?</p><p class="text-slate-400 mt-1">Soporte físico no volátil de retención de archivos.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Para qué sirve?</p><p class="text-slate-400 mt-1">Guarda el SO, juegos, documentos y herramientas permanentemente.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Cómo funciona?</p><p class="text-slate-400 mt-1">Magnético (HDD) o semiconductor flash NAND de silicio (SSD).</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Dónde se utiliza?</p><p class="text-slate-400 mt-1">Buzones PCIe NVMe, bahías SATA de 2.5/3.5 pulgadas.</p></div>
+                        <div class="p-2"><p class="font-bold text-brand-neonCyan">¿Por qué es vital?</p><p class="text-slate-400 mt-1">Define el tiempo de arranque del sistema y carga de programas.</p></div>
+                    </div>
+
+                    <div class="flex flex-col lg:flex-row gap-8 items-start mb-6">
+                        <div class="flex-1">
+                            <span class="text-xs font-mono text-brand-neonCyan bg-brand-neonCyan/10 px-3 py-1 rounded-full">Almacenamiento Persistente</span>
+                            <h3 class="text-xl font-bold font-display mt-2 mb-4">HDD vs SSD SATA vs SSD NVMe</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                                La evolución del almacenamiento informático ha transitado desde platos magnéticos de rotación mecánica lenta hasta chips de memoria no volátil conectados directamente al procesador a través de líneas PCIe ultrarrápidas.
+                            </p>
+                        </div>
+                        <div class="w-full lg:w-80">
+                            <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=400&q=80" alt="SSD drive" class="rounded-xl border border-slate-800 shadow-md">
+                        </div>
+                    </div>
+
+                    <!-- DETALLE DE LAS TRES TECNOLOGÍAS -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- HDD -->
+                        <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">HDD Magnético</span>
+                                <span class="w-2.5 h-2.5 bg-yellow-400 rounded-full"></span>
+                            </div>
+                            <h5 class="font-bold text-slate-200 text-xs mb-2">Disco Duro Mecánico</h5>
+                            <p class="text-slate-400 text-[11px] leading-relaxed">
+                                Utiliza platos giratorios y cabezales magnéticos físicos. Ideal para servidores NAS y almacenamiento pasivo masivo de bajo costo. 
+                            </p>
+                        </div>
+                        <!-- SSD SATA -->
+                        <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-brand-neonCyan">SSD SATA III</span>
+                                <span class="w-2.5 h-2.5 bg-brand-neonCyan rounded-full"></span>
+                            </div>
+                            <h5 class="font-bold text-slate-200 text-xs mb-2">SSD de Estado Sólido 2.5"</h5>
+                            <p class="text-slate-400 text-[11px] leading-relaxed">
+                                Utiliza celdas de silicio sin partes móviles. Limitado por la interfaz SATA III a una velocidad máxima de 550-600 MB/s. Excelente para revivir computadoras antiguas.
+                            </p>
+                        </div>
+                        <!-- SSD NVME -->
+                        <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-brand-neonPurple">M.2 NVMe PCIe</span>
+                                <span class="w-2.5 h-2.5 bg-brand-neonPurple rounded-full"></span>
+                            </div>
+                            <h5 class="font-bold text-slate-200 text-xs mb-2">SSD NVMe M.2 de Alta Velocidad</h5>
+                            <p class="text-slate-400 text-[11px] leading-relaxed">
+                                Se monta directamente en la tarjeta madre en ranuras M.2 utilizando carriles PCIe Gen 4/Gen 5. Capaz de velocidades de lectura superiores a los 7,000+ MB/s.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- COMPARATIVA TABULAR -->
+                    <div class="mt-8 pt-8 border-t border-slate-800">
+                        <h4 class="text-sm font-bold text-slate-200 mb-3"><i class="fa-solid fa-scale-balanced text-brand-neonCyan"></i> Tabla Comparativa de Rendimiento</h4>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-slate-400 bg-slate-950/40">
+                                        <th class="p-3">Métrica</th>
+                                        <th class="p-3">HDD (3.5")</th>
+                                        <th class="p-3">SSD SATA (2.5")</th>
+                                        <th class="p-3">SSD M.2 NVMe (Gen 4)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800 text-slate-400">
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Velocidad de Lectura/Escritura</td>
+                                        <td class="p-3">100 - 150 MB/s</td>
+                                        <td class="p-3">500 - 550 MB/s</td>
+                                        <td class="p-3 text-brand-neonCyan font-mono">3,500 - 7,400+ MB/s</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Resistencia a Impactos</td>
+                                        <td class="p-3 text-red-400">Nula (Sensible a golpes y caídas)</td>
+                                        <td class="p-3 text-emerald-400">Muy Alta (Sin partes móviles)</td>
+                                        <td class="p-3 text-emerald-400">Muy Alta (Sin partes móviles)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Precio por Gigabyte</td>
+                                        <td class="p-3 text-emerald-400">Económico</td>
+                                        <td class="p-3">Moderado</td>
+                                        <td class="p-3">Premium</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 bg-slate-950/80 rounded-xl border border-slate-800 mt-4 text-xs">
+                            <span class="font-bold text-slate-200">¿Cuál es Mejor?</span> 
+                            <p class="text-slate-400 mt-1">
+                                Para instalar el Sistema Operativo, software principal y gaming, <strong class="text-brand-neonCyan">un SSD NVMe M.2 es indiscutiblemente la mejor opción</strong>. Los discos duros HDD tradicionales quedan relegados exclusivamente para almacenamiento masivo de datos estáticos y copias de seguridad de bajo costo.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- TARJETAS GRÁFICAS (NVIDIA vs AMD) -->
+                <section id="gpu" class="tech-section bg-slate-900/30 rounded-2xl p-6 border border-slate-800 scroll-mt-24">
+                    <!-- FAQ Preview Block -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 text-xs bg-slate-950/70 p-4 rounded-xl border border-slate-800/50">
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Qué es?</p><p class="text-slate-400 mt-1">Unidad de procesamiento gráfico acelerado con memoria de alta velocidad.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Para qué sirve?</p><p class="text-slate-400 mt-1">Calcula los píxeles, texturas, trazado de rayos e IA generativa.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Cómo funciona?</p><p class="text-slate-400 mt-1">Ejecuta procesamiento masivo paralelo con miles de núcleos paralelos.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Dónde se utiliza?</p><p class="text-slate-400 mt-1">En ranuras PCIe x16 de las placas base de escritorio.</p></div>
+                        <div class="p-2"><p class="font-bold text-brand-neonCyan">¿Por qué es vital?</p><p class="text-slate-400 mt-1">Clave para gaming moderno, renderizado 3D y entrenamiento de Inteligencia Artificial.</p></div>
+                    </div>
+
+                    <div class="flex flex-col lg:flex-row gap-8 items-start mb-6">
+                        <div class="flex-1">
+                            <span class="text-xs font-mono text-brand-neonCyan bg-brand-neonCyan/10 px-3 py-1 rounded-full">Procesamiento Gráfico</span>
+                            <h3 class="text-xl font-bold font-display mt-2 mb-4">Tarjetas Gráficas (GPU) Dedicadas</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                                Diseñadas específicamente para el procesamiento de gráficos en 3D y cómputo matemático paralelo intensivo, liberando por completo de estas tareas a la CPU del sistema.
+                            </p>
+                        </div>
+                        <div class="w-full lg:w-80">
+                            <img src="https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=400&q=80" alt="Graphics Card GPU" class="rounded-xl border border-slate-800 shadow-md">
+                        </div>
+                    </div>
+
+                    <!-- COMPARATIVA NVIDIA VS AMD -->
+                    <div class="mt-8 pt-8 border-t border-slate-800">
+                        <h4 class="text-md font-bold text-slate-200 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-scale-balanced text-brand-neonCyan"></i> NVIDIA GeForce vs AMD Radeon
+                        </h4>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-slate-400 bg-slate-950/40">
+                                        <th class="p-3">Característica</th>
+                                        <th class="p-3">NVIDIA GeForce RTX (ej. RTX 4080)</th>
+                                        <th class="p-3">AMD Radeon RX (ej. RX 7900 XTX)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800 text-slate-400">
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Trazado de Rayos (Ray Tracing)</td>
+                                        <td class="p-3 text-emerald-400 font-semibold">Excelente (Núcleos RT de 3ª generación de gran capacidad)</td>
+                                        <td class="p-3 text-amber-400">Modesto (Sufre pérdida de rendimiento notable)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Reescalado Inteligente</td>
+                                        <td class="p-3">DLSS 3.0 / 3.5 (Excelente calidad con reconstrucción por hardware de IA)</td>
+                                        <td class="p-3">FSR 3.0 (Solución de código abierto, compatible con múltiples plataformas)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Precio/Rendimiento (Rasterización)</td>
+                                        <td class="p-3">Precio elevado</td>
+                                        <td class="p-3 text-emerald-400 font-semibold">Excelente costo por FPS en juegos tradicionales sin trazado de rayos</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 bg-slate-950/80 rounded-xl border border-slate-800 mt-4 text-xs">
+                            <span class="font-bold text-slate-200">¿Cuál es Mejor?</span> 
+                            <p class="text-slate-400 mt-1">
+                                Si buscas el mejor ecosistema para Inteligencia Artificial, trazado de rayos de última generación y soporte para DLSS, <strong class="text-brand-neonCyan">NVIDIA es la líder del mercado</strong>. Por otro lado, si buscas maximizar los fotogramas por segundo tradicionales en juegos sin Ray Tracing por el menor precio posible, <strong class="text-brand-neonPurple">AMD Radeon ofrece la mejor relación calidad-precio</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- TARJETA MADRE & CHIPSETS -->
+                <section id="motherboard" class="tech-section bg-slate-900/30 rounded-2xl p-6 border border-slate-800 scroll-mt-24">
+                    <!-- FAQ Preview Block -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 text-xs bg-slate-950/70 p-4 rounded-xl border border-slate-800/50">
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Qué es?</p><p class="text-slate-400 mt-1">Placa de circuito impreso principal (PCB) del sistema.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Para qué sirve?</p><p class="text-slate-400 mt-1">Conecta e interconecta eléctricamente todos los componentes.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Cómo funciona?</p><p class="text-slate-400 mt-1">Utiliza buses de pistas de cobre y un chipset para dirigir el tráfico de datos.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Dónde se utiliza?</p><p class="text-slate-400 mt-1">Dentro del gabinete de la computadora montada en postes metálicos.</p></div>
+                        <div class="p-2"><p class="font-bold text-brand-neonCyan">¿Por qué es vital?</p><p class="text-slate-400 mt-1">Establece los límites físicos de expansión del equipo.</p></div>
+                    </div>
+
+                    <div class="flex flex-col lg:flex-row gap-8 items-start mb-6">
+                        <div class="flex-1">
+                            <span class="text-xs font-mono text-brand-neonCyan bg-brand-neonCyan/10 px-3 py-1 rounded-full">Placa de Circuito Impreso (PCB)</span>
+                            <h3 class="text-xl font-bold font-display mt-2 mb-4">La Placa Base (Motherboard)</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                                Alberga el Socket de la CPU, ranuras de RAM, ranuras de expansión PCI Express para la GPU y el circuito regulador de voltaje (VRM) que asegura el flujo eléctrico constante.
+                            </p>
+                        </div>
+                        <div class="w-full lg:w-80">
+                            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=400&q=80" alt="Motherboard circuitry" class="rounded-xl border border-slate-800 shadow-md">
+                        </div>
+                    </div>
+
+                    <!-- COMPARATIVA CHIPSETS INTEL VS AMD -->
+                    <div class="mt-8 pt-8 border-t border-slate-800">
+                        <h4 class="text-md font-bold text-slate-200 mb-3"><i class="fa-solid fa-scale-balanced text-brand-neonCyan"></i> Comparativa de Chipsets Actuales</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-400">
+                            <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800">
+                                <h5 class="font-bold text-slate-200 mb-2">Chipsets Intel (ej. Z790, B760, H610)</h5>
+                                <ul class="space-y-1 list-disc list-inside">
+                                    <li><strong class="text-brand-neonCyan">Línea Z:</strong> Soporta overclocking y alta cantidad de líneas PCIe.</li>
+                                    <li><strong class="text-brand-neonCyan">Línea B:</strong> Opción balanceada, soporta overclock de RAM pero no de CPU.</li>
+                                    <li><strong class="text-brand-neonCyan">Línea H:</strong> Nivel de entrada con conectividad y conectores básicos reducidos.</li>
+                                </ul>
+                            </div>
+                            <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800">
+                                <h5 class="font-bold text-slate-200 mb-2">Chipsets AMD AM5 (ej. X670E, B650, A620)</h5>
+                                <ul class="space-y-1 list-disc list-inside">
+                                    <li><strong class="text-brand-neonPurple">Línea X/E:</strong> Máxima conectividad PCIe Gen 5 garantizada en todos los slots.</li>
+                                    <li><strong class="text-brand-neonPurple">Línea B:</strong> Permite overclocking del procesador y excelente disipación VRM.</li>
+                                    <li><strong class="text-brand-neonPurple">Línea A:</strong> No admite overclocking, diseño básico ideal para ensamble económico.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-950/80 rounded-xl border border-slate-800 mt-4 text-xs">
+                            <span class="font-bold text-slate-200">¿Cuál es Mejor?</span> 
+                            <p class="text-slate-400 mt-1">
+                                Las tarjetas madre de <strong class="text-brand-neonCyan">AMD con sockets AM5</strong> ofrecen un soporte a largo plazo excepcional garantizando actualizaciones futuras de CPU sin cambiar la placa. Sin embargo, <strong class="text-brand-neonPurple">Intel</strong> destaca por la madurez y estabilidad inmediata de sus controladores de memoria en entornos corporativos de gama alta.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- BIOS VS UEFI -->
+                <section id="bios" class="tech-section bg-slate-900/30 rounded-2xl p-6 border border-slate-800 scroll-mt-24">
+                    <!-- FAQ Preview Block -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 text-xs bg-slate-950/70 p-4 rounded-xl border border-slate-800/50">
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Qué es?</p><p class="text-slate-400 mt-1">El firmware principal alojado en un chip ROM dedicado en la placa base.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Para qué sirve?</p><p class="text-slate-400 mt-1">Inicializa el hardware y carga el gestor de arranque del SO.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Cómo funciona?</p><p class="text-slate-400 mt-1">Realiza un POST (Power On Self Test) básico y arranca el disco asignado.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Dónde se utiliza?</p><p class="text-slate-400 mt-1">En el nivel más profundo de arranque de cualquier PC moderna o antigua.</p></div>
+                        <div class="p-2"><p class="font-bold text-brand-neonCyan">¿Por qué es vital?</p><p class="text-slate-400 mt-1">Sin este firmware es imposible arrancar ningún sistema de almacenamiento.</p></div>
+                    </div>
+
+                    <div class="mt-8 pt-4 border-t border-slate-800">
+                        <h4 class="text-md font-bold text-slate-200 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-scale-balanced text-brand-neonCyan"></i> Comparativa Técnica: BIOS Legacy vs UEFI
+                        </h4>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-slate-400 bg-slate-950/40">
+                                        <th class="p-3">Atributo</th>
+                                        <th class="p-3">BIOS Tradicional (Legacy)</th>
+                                        <th class="p-3">UEFI (Moderno)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800 text-slate-400">
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Interfaz de Usuario</td>
+                                        <td class="p-3 text-red-400">Modo de texto rústico azul/gris, controlado solo por teclado</td>
+                                        <td class="p-3 text-emerald-400">Interfaz gráfica compleja de alta definición con soporte para mouse</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Capacidad Máxima del Disco de Arranque</td>
+                                        <td class="p-3 text-slate-500">Hasta 2.2 Terabytes (Esquema de particiones MBR)</td>
+                                        <td class="p-3 text-emerald-400">Hasta 9.4 Zetabytes (Esquema de particiones GPT de gran capacidad)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Seguridad de Arranque</td>
+                                        <td class="p-3 text-red-400">Nula (Vulnerable a Rootkits y malware del sector de arranque)</td>
+                                        <td class="p-3 text-emerald-400">Secure Boot (Firma criptográfica obligatoria para el cargador de arranque)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 bg-slate-950/80 rounded-xl border border-slate-800 mt-4 text-xs">
+                            <span class="font-bold text-slate-200">¿Cuál es Mejor?</span> 
+                            <p class="text-slate-400 mt-1">
+                                <strong class="text-brand-neonCyan">UEFI es indiscutiblemente superior y obligatorio en sistemas modernos</strong>. Cumple con los requerimientos necesarios de seguridad (como TPM 2.0 y Secure Boot) indispensables para arrancar sistemas operativos como Windows 11.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- FUENTE DE PODER -->
+                <section id="psu" class="tech-section bg-slate-900/30 rounded-2xl p-6 border border-slate-800 scroll-mt-24">
+                    <!-- FAQ Preview Block -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 text-xs bg-slate-950/70 p-4 rounded-xl border border-slate-800/50">
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Qué es?</p><p class="text-slate-400 mt-1">Transformador eléctrico estabilizador del sistema.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Para qué sirve?</p><p class="text-slate-400 mt-1">Convierte corriente alterna (AC) a corriente continua limpia (DC).</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Cómo funciona?</p><p class="text-slate-400 mt-1">Utiliza rectificadores, transformadores y condensadores en raíles de 12V, 5V y 3.3V.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Dónde se utiliza?</p><p class="text-slate-400 mt-1">Atornillada en la base o parte superior trasera del gabinete.</p></div>
+                        <div class="p-2"><p class="font-bold text-brand-neonCyan">¿Por qué es vital?</p><p class="text-slate-400 mt-1">Mantiene protegida la inversión en componentes caros contra sobretensiones.</p></div>
+                    </div>
+
+                    <div class="mt-8 pt-4 border-t border-slate-800">
+                        <h4 class="text-md font-bold text-slate-200 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-scale-balanced text-brand-neonCyan"></i> Comparativa de Alimentación: Certificadas vs Genéricas
+                        </h4>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-slate-400 bg-slate-950/40">
+                                        <th class="p-3">Aspecto</th>
+                                        <th class="p-3">Fuente Genérica</th>
+                                        <th class="p-3">Fuente de Poder Certificada (80 Plus / Cybernetics)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800 text-slate-400">
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Eficiencia Energética</td>
+                                        <td class="p-3 text-red-400">Pobre (Menor al 65-70% con mucha disipación de calor residual)</td>
+                                        <td class="p-3 text-emerald-400">Alta (80% a 94%+ en certificaciones Gold, Platinum o Titanium)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Sistemas de Protección (OVP, SCP, OPP)</td>
+                                        <td class="p-3 text-red-500 font-semibold">Inexistentes o muy deficientes (Riesgo inminente de fuego en sobrecarga)</td>
+                                        <td class="p-3 text-emerald-400 font-semibold">Integradas de manera redundante para proteger el resto de componentes</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Modularidad de Cables</td>
+                                        <td class="p-3 text-slate-500">Cables fijos y coloreados desordenados</td>
+                                        <td class="p-3">Soporta Semimodular y Completamente Modular para mejor flujo interno</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 bg-slate-950/80 rounded-xl border border-slate-800 mt-4 text-xs">
+                            <span class="font-bold text-slate-200">¿Cuál es Mejor?</span> 
+                            <p class="text-slate-400 mt-1">
+                                <strong class="text-emerald-400">Una fuente con certificación 80 Plus (mínimo Bronze o Gold) es imprescindible</strong> para cualquier ensamble estable. Una fuente genérica representa un grave peligro constante para la vida útil de componentes costosos como el procesador y la tarjeta gráfica.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- SISTEMAS DE REFRIGERACIÓN -->
+                <section id="cooling" class="tech-section bg-slate-900/30 rounded-2xl p-6 border border-slate-800 scroll-mt-24">
+                    <!-- FAQ Preview Block -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 text-xs bg-slate-950/70 p-4 rounded-xl border border-slate-800/50">
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Qué es?</p><p class="text-slate-400 mt-1">Ecosistema disipador térmico de componentes críticos.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Para qué sirve?</p><p class="text-slate-400 mt-1">Evita que la CPU/GPU excedan los límites de temperatura seguros.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Cómo funciona?</p><p class="text-slate-400 mt-1">Conduce el calor por tuberías de cobre hacia una torre de ventilación o fluido líquido bombeado.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonCyan">¿Dónde se utiliza?</p><p class="text-slate-400 mt-1">Encima del IHS de la CPU e integrado en los chasis.</p></div>
+                        <div class="p-2"><p class="font-bold text-brand-neonCyan">¿Por qué es vital?</p><p class="text-slate-400 mt-1">Optimiza el rendimiento y prolonga dramáticamente la vida de los integrados.</p></div>
+                    </div>
+
+                    <div class="mt-8 pt-4 border-t border-slate-800">
+                        <h4 class="text-md font-bold text-slate-200 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-scale-balanced text-brand-neonCyan"></i> Comparativa Térmica: Aire vs Refrigeración Líquida (AIO)
+                        </h4>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-slate-400 bg-slate-950/40">
+                                        <th class="p-3">Criterio</th>
+                                        <th class="p-3">Disipador por Aire (Torre de Aluminio)</th>
+                                        <th class="p-3">Refrigeración Líquida (AIO)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800 text-slate-400">
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Fiabilidad y Mantenimiento</td>
+                                        <td class="p-3 text-emerald-400">Extrema fiabilidad (El único componente de falla móvil es el ventilador fácilmente reemplazable)</td>
+                                        <td class="p-3 text-amber-400">Vida útil media del fluido de 4-6 años. Riesgo bajo de fugas o muerte súbita de bomba.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Estética del Gabinete</td>
+                                        <td class="p-3 text-slate-500">Bloques de aluminio grandes y pesados que dificultan la vista interna</td>
+                                        <td class="p-3 text-emerald-400">Limpio, con iluminación RGB y mayor libertad en la ranura RAM</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Capacidad Máxima de Disipación</td>
+                                        <td class="p-3">Hasta 200W-220W de TDP máximo en torres de doble ventilador</td>
+                                        <td class="p-3 text-emerald-400 font-semibold">300W+ de TDP en radiadores grandes de 360mm o 420mm</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 bg-slate-950/80 rounded-xl border border-slate-800 mt-4 text-xs">
+                            <span class="font-bold text-slate-200">¿Cuál es Mejor?</span> 
+                            <p class="text-slate-400 mt-1">
+                                Para procesadores de consumo moderado e intermedio, <strong class="text-emerald-400">un disipador por aire de buena marca ofrece durabilidad infinita y costo cero de mantenimiento</strong>. Sin embargo, para procesadores entusiastas de alta gama (Core i9 o Ryzen 9 con overclocking sostenido), <strong class="text-brand-neonCyan">un kit de refrigeración líquida de 360mm es obligatorio</strong> para evitar la pérdida de velocidad de procesamiento.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- OTROS DISPOSITIVOS DE HARDWARE E-S Y RED -->
+                <section id="peripherals" class="tech-section bg-slate-900/30 rounded-2xl p-6 border border-slate-800 scroll-mt-24">
+                    <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full">Periferia e Interconexiones</span>
+                    <h3 class="text-xl font-bold font-display mt-2 mb-6">Otros Componentes de Hardware</h3>
+
+                    <!-- Grid de Componentes Menores -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Gabinete / Chasis -->
+                        <div class="p-4 bg-slate-950/50 rounded-xl border border-slate-800">
+                            <h5 class="text-sm font-bold text-slate-200 mb-1"><i class="fa-solid fa-box text-brand-neonCyan mr-2"></i> Gabinete e Infraestructura</h5>
+                            <p class="text-slate-400 text-xs mb-2">Alojamiento que proporciona anclajes para la ventilación y estructura del PC.</p>
+                            <span class="text-[10px] text-brand-neonCyan font-semibold">Falla Común:</span> <span class="text-slate-500 text-[10px]">Restricción excesiva de aire por paneles de vidrio cerrados sin malla frontal. Solución: Usar gabinetes con frontal de malla metálica (Mesh).</span>
+                        </div>
+                        <!-- Cable SATA / ATX / PCIe -->
+                        <div class="p-4 bg-slate-950/50 rounded-xl border border-slate-800">
+                            <h5 class="text-sm font-bold text-slate-200 mb-1"><i class="fa-solid fa-lines-leaning text-brand-neonCyan mr-2"></i> Cableados Críticos (SATA, ATX 24 pines, PCIe 12VHPWR)</h5>
+                            <p class="text-slate-400 text-xs mb-2">Líneas de comunicación y suministro energético de alta conductividad.</p>
+                            <span class="text-[10px] text-brand-neonCyan font-semibold">Falla Común:</span> <span class="text-slate-500 text-[10px]">Cables de poder doblados con ángulos peligrosos que provocan calor térmico o cortocircuito. Solución: Conectar firmemente de manera perpendicular.</span>
+                        </div>
+                        <!-- Dispositivos de Interconexión Red (Router, Switch, AP) -->
+                        <div class="p-4 bg-slate-950/50 rounded-xl border border-slate-800">
+                            <h5 class="text-sm font-bold text-slate-200 mb-1"><i class="fa-solid fa-wifi text-brand-neonCyan mr-2"></i> Redes: Router, Switch y Access Point</h5>
+                            <p class="text-slate-400 text-xs mb-2">Dirigen el direccionamiento de paquetes IP y extienden el alcance físico.</p>
+                            <div class="flex justify-between items-center text-[10px] text-slate-400 mt-2 pt-2 border-t border-slate-800">
+                                <span>WiFi: Mayor comodidad móvil</span>
+                                <span class="text-brand-neonCyan">Ethernet: Latencia ultra baja para gaming/servidores</span>
+                            </div>
+                        </div>
+                        <!-- Periféricos Entrada/Salida -->
+                        <div class="p-4 bg-slate-950/50 rounded-xl border border-slate-800">
+                            <h5 class="text-sm font-bold text-slate-200 mb-1"><i class="fa-solid fa-keyboard text-brand-neonCyan mr-2"></i> Teclado, Mouse, Monitor e Impresora</h5>
+                            <p class="text-slate-400 text-xs mb-2">Puentes de interacción analógico-digital y visualización del usuario.</p>
+                            <div class="flex justify-between items-center text-[10px] text-slate-400 mt-2 pt-2 border-t border-slate-800">
+                                <span>Monitores IPS: Color fidedigno</span>
+                                <span class="text-emerald-400">VA: Contraste profundo</span>
+                                <span>TN: Velocidad de respuesta</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- SOFTWARE SECTION HEADER -->
+                <div class="border-b border-slate-800 pb-4">
+                    <h2 class="text-2xl font-display font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-neonPurple to-brand-electricBlue flex items-center gap-3">
+                        <i class="fa-solid fa-laptop-code"></i> II. MANUAL DE SISTEMAS Y SOFTWARE
+                    </h2>
+                    <p class="text-slate-400 text-xs mt-1">Sistemas operativos, navegadores, entornos de desarrollo y solución de fallas lógicas.</p>
+                </div>
+
+
+                <!-- SISTEMAS OPERATIVOS -->
+                <section id="os" class="tech-section bg-slate-900/30 rounded-2xl p-6 border border-slate-800 scroll-mt-24">
+                    <!-- FAQ Preview Block -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 text-xs bg-slate-950/70 p-4 rounded-xl border border-slate-800/50">
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonPurple">¿Qué es?</p><p class="text-slate-400 mt-1">El programa base de nivel de software maestro que gestiona el hardware.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonPurple">¿Para qué sirve?</p><p class="text-slate-400 mt-1">Abstrae la complejidad física permitiendo ejecutar programas de usuario.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonPurple">¿Cómo funciona?</p><p class="text-slate-400 mt-1">Maneja un Kernel central encargado de la asignación de memoria y CPU.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonPurple">¿Dónde se utiliza?</p><p class="text-slate-400 mt-1">En el sector de arranque MBR/GPT de cualquier dispositivo informático.</p></div>
+                        <div class="p-2"><p class="font-bold text-brand-neonPurple">¿Por qué es vital?</p><p class="text-slate-400 mt-1">Es la interfaz de control que conecta las intenciones del usuario con el circuito eléctrico.</p></div>
+                    </div>
+
+                    <div class="flex flex-col lg:flex-row gap-8 items-start mb-6">
+                        <div class="flex-1">
+                            <span class="text-xs font-mono text-brand-neonPurple bg-brand-neonPurple/10 px-3 py-1 rounded-full">Sistemas Operativos (OS)</span>
+                            <h3 class="text-xl font-bold font-display mt-2 mb-4">Windows vs macOS vs Linux</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                                El ecosistema de computadoras de escritorio y servidores está dominado por tres arquitecturas de sistemas operativos distintas, cada una orientada a diferentes perfiles de usuario y propósitos de producción.
+                            </p>
+                        </div>
+                        <div class="w-full lg:w-80">
+                            <img src="https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=400&q=80" alt="Linux and OS" class="rounded-xl border border-slate-800 shadow-md">
+                        </div>
+                    </div>
+
+                    <!-- COMPARATIVA TABULAR SISTEMAS OPERATIVOS -->
+                    <div class="mt-8 pt-8 border-t border-slate-800">
+                        <h4 class="text-md font-bold text-slate-200 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-scale-balanced text-brand-neonPurple"></i> Windows vs macOS vs Linux
+                        </h4>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-slate-400 bg-slate-950/40">
+                                        <th class="p-3">Característica</th>
+                                        <th class="p-3">Windows (Microsoft)</th>
+                                        <th class="p-3">macOS (Apple)</th>
+                                        <th class="p-3">Linux (Abierto/Distribuciones)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800 text-slate-400">
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Compatibilidad de software y juegos</td>
+                                        <td class="p-3 text-emerald-400 font-semibold">Excelente (Estándar de facto para el software comercial)</td>
+                                        <td class="p-3 text-amber-400">Buena (Fuerte en suites creativas, pero muy limitado en gaming)</td>
+                                        <td class="p-3">Moderada (Soporta software de desarrollo y gaming vía capas como Proton)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Seguridad Out-of-the-box</td>
+                                        <td class="p-3 text-amber-500 font-semibold">Media (Objetivo principal de la mayoría del malware global)</td>
+                                        <td class="p-3 text-emerald-400 font-semibold">Excelente (Entorno sandbox cerrado muy estricto)</td>
+                                        <td class="p-3 text-emerald-400 font-semibold">Extrema (Gestión rigurosa de privilegios root y código auditable)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Facilidad de Personalización</td>
+                                        <td class="p-3">Moderada (Sujeto a las decisiones de diseño de interfaz de Microsoft)</td>
+                                        <td class="p-3 text-red-400">Baja (Ecosistema estricto, no modificable fácilmente)</td>
+                                        <td class="p-3 text-emerald-400 font-semibold">Ilimitada (Posibilidad de cambiar por completo el kernel e interfaz gráfica)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 bg-slate-950/80 rounded-xl border border-slate-800 mt-4 text-xs">
+                            <span class="font-bold text-slate-200">¿Cuál es Mejor?</span> 
+                            <p class="text-slate-400 mt-1">
+                                <strong class="text-brand-electricBlue">Windows es ideal para el público masivo y gaming</strong>. <strong class="text-slate-300">macOS es excelente para creativos de alto presupuesto y desarrollo dentro de la suite Apple</strong>. <strong class="text-brand-neonPurple">Linux es la opción superior para programadores, administración de servidores web</strong> y usuarios que busquen control total de su privacidad y eficiencia del hardware.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- NAVEGADORES WEB -->
+                <section id="browsers" class="tech-section bg-slate-900/30 rounded-2xl p-6 border border-slate-800 scroll-mt-24">
+                    <!-- FAQ Preview Block -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 text-xs bg-slate-950/70 p-4 rounded-xl border border-slate-800/50">
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonPurple">¿Qué es?</p><p class="text-slate-400 mt-1">Cliente HTTP de renderizado de hipertexto y JS.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonPurple">¿Para qué sirve?</p><p class="text-slate-400 mt-1">Traduce código HTML/CSS/JS en páginas visuales interactivas.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonPurple">¿Cómo funciona?</p><p class="text-slate-400 mt-1">Usa motores como Blink (Chromium) o Gecko (Firefox) para estructurar el DOM.</p></div>
+                        <div class="p-2 border-r border-slate-800 last:border-0"><p class="font-bold text-brand-neonPurple">¿Dónde se utiliza?</p><p class="text-slate-400 mt-1">En el día a día para cualquier consulta o app de Internet.</p></div>
+                        <div class="p-2"><p class="font-bold text-brand-neonPurple">¿Por qué es vital?</p><p class="text-slate-400 mt-1">Es la ventana y el portal interactivo principal al mundo digital moderno.</p></div>
+                    </div>
+
+                    <div class="mt-8 pt-4 border-t border-slate-800">
+                        <h4 class="text-md font-bold text-slate-200 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-scale-balanced text-brand-neonPurple"></i> Chrome vs Firefox vs Edge vs Opera
+                        </h4>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-slate-400 bg-slate-950/40">
+                                        <th class="p-3">Navegador</th>
+                                        <th class="p-3">Motor Principal</th>
+                                        <th class="p-3">Ventaja Clave</th>
+                                        <th class="p-3">Desventaja Clave</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800 text-slate-400">
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Google Chrome</td>
+                                        <td class="p-3">Blink (Chromium)</td>
+                                        <td class="p-3 text-emerald-400">Excelente velocidad y catálogo masivo de extensiones</td>
+                                        <td class="p-3 text-amber-500">Alto consumo de memoria RAM y recolección agresiva de datos</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Mozilla Firefox</td>
+                                        <td class="p-3">Gecko</td>
+                                        <td class="p-3 text-emerald-400">Gran privacidad, motor libre de control corporativo y código abierto</td>
+                                        <td class="p-3 text-amber-500">Velocidad ligeramente inferior en apps web pesadas complejas</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-slate-300">Microsoft Edge</td>
+                                        <td class="p-3">Blink (Chromium)</td>
+                                        <td class="p-3 text-emerald-400">Eficiencia de RAM excepcional en Windows e Inteligencia Artificial integrada</td>
+                                        <td class="p-3 text-amber-500">Publicidad molesta e insistente de Microsoft para utilizar sus servicios corporativos</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- PROGRAMACIÓN, BASES DE DATOS Y EDICIÓN -->
+                <section id="dev-suite" class="tech-section bg-slate-900/30 rounded-2xl p-6 border border-slate-800 scroll-mt-24">
+                    <span class="text-xs font-mono text-brand-neonPurple bg-brand-neonPurple/10 px-3 py-1 rounded-full">Suite de Producción Digital</span>
+                    <h3 class="text-xl font-bold font-display mt-2 mb-6">Herramientas Profesionales de Software</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- IDEs Programación -->
+                        <div class="p-4 bg-slate-950/50 rounded-xl border border-slate-800">
+                            <h5 class="text-sm font-bold text-slate-200 mb-2"><i class="fa-solid fa-code text-brand-neonPurple mr-2"></i> VS Code vs Sublime Text</h5>
+                            <p class="text-slate-400 text-xs leading-relaxed">
+                                <strong class="text-slate-300">VS Code</strong> se corona como el preferido de la industria debido a su ecosistema masivo de extensiones integradas y depuradores inteligentes. Por su parte, <strong class="text-slate-300">Sublime Text</strong> destaca por un rendimiento y una ligereza de lectura del procesador impecable.
+                            </p>
+                        </div>
+                        <!-- Bases de Datos -->
+                        <div class="p-4 bg-slate-950/50 rounded-xl border border-slate-800">
+                            <h5 class="text-sm font-bold text-slate-200 mb-2"><i class="fa-solid fa-database text-brand-neonPurple mr-2"></i> MySQL vs PostgreSQL</h5>
+                            <p class="text-slate-400 text-xs leading-relaxed">
+                                <strong class="text-slate-300">MySQL</strong> es ideal para aplicaciones web rápidas y sencillas debido a su amplio ecosistema de hosting directo. En cambio, <strong class="text-slate-300">PostgreSQL</strong> se prefiere para aplicaciones complejas que requieran integridad referencial y manejo avanzado de tipos de datos a gran escala.
+                            </p>
+                        </div>
+                        <!-- Virtualización -->
+                        <div class="p-4 bg-slate-950/50 rounded-xl border border-slate-800">
+                            <h5 class="text-sm font-bold text-slate-200 mb-2"><i class="fa-solid fa-server text-brand-neonPurple mr-2"></i> VirtualBox vs VMware</h5>
+                            <p class="text-slate-400 text-xs leading-relaxed">
+                                <strong class="text-slate-300">VirtualBox</strong> es la herramienta open-source multiplataforma ideal para pruebas de laboratorio sencillas y entornos de aprendizaje interactivos. Por otro lado, <strong class="text-slate-300">VMware ESXi/Workstation</strong> provee el estándar corporativo para infraestructuras con un rendimiento de hardware directo y estabilidad de nivel empresarial.
+                            </p>
+                        </div>
+                        <!-- Compresión y Nube -->
+                        <div class="p-4 bg-slate-950/50 rounded-xl border border-slate-800">
+                            <h5 class="text-sm font-bold text-slate-200 mb-2"><i class="fa-solid fa-cloud text-brand-neonPurple mr-2"></i> 7-Zip vs Google Drive vs OneDrive</h5>
+                            <p class="text-slate-400 text-xs leading-relaxed">
+                                Soluciones integrales para la optimización física de datos y el almacenamiento remoto en la nube sincronizado con sistemas operativos locales para la seguridad frente a desastres.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- SECCIÓN DE VIDEO TUTORIALES EMBEDDED -->
+                <section id="video-tutorials" class="tech-section bg-slate-900/40 rounded-3xl p-6 md:p-10 border border-slate-800/80 scroll-mt-24">
+                    <div class="mb-6">
+                        <span class="text-xs font-mono text-rose-400 bg-rose-500/10 px-3 py-1 rounded-full">SOPORTE AUDIOVISUAL</span>
+                        <h3 class="text-2xl font-bold font-display mt-2">Video Tutoriales Técnicos</h3>
+                        <p class="text-slate-400 text-xs mt-1">Aprende de manera interactiva con guías visuales sobre ensamble de computadoras y diagnóstico avanzado de hardware y software.</p>
+                    </div>
+
+                    <!-- Grid de Videos Integrados -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Video 1 -->
+                        <div class="bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex flex-col justify-between">
+                            <div class="relative pb-[56.25%]">
+                                <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/gU9G6b2E5qA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                            <div class="p-3 text-xs">
+                                <h5 class="font-semibold text-slate-200 mb-1">Guía Completa de Ensamble de Hardware</h5>
+                                <p class="text-slate-500">Aprende paso a paso cómo armar una computadora de principio a fin de forma segura.</p>
+                            </div>
+                        </div>
+
+                        <!-- Video 2 -->
+                        <div class="bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex flex-col justify-between">
+                            <div class="relative pb-[56.25%]">
+                                <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/nUbyf_bCgW8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                            <div class="p-3 text-xs">
+                                <h5 class="font-semibold text-slate-200 mb-1">Mantenimiento y Solución de Fallas Comunes</h5>
+                                <p class="text-slate-500">Aprende a diagnosticar por qué tu computadora no enciende o da pantallazos.</p>
+                            </div>
+                        </div>
+
+                        <!-- Video 3 -->
+                        <div class="bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex flex-col justify-between">
+                            <div class="relative pb-[56.25%]">
+                                <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/I0n0PZ5QpP0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                            <div class="p-3 text-xs">
+                                <h5 class="font-semibold text-slate-200 mb-1">Optimización Avanzada de Sistemas Operativos</h5>
+                                <p class="text-slate-500">Mejora el rendimiento de tu sistema operativo y reduce la latencia de procesamiento.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- FOOTER PROFESIONAL -->
+            <footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">
+                <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-microchip text-brand-neonCyan"></i>
+                        <span class="font-display font-semibold tracking-wider text-slate-300">MANUAL TÉCNICO DE SISTEMAS</span>
+                    </div>
+                    <p>© 2026 Manual Técnico. Todos los derechos reservados. Diseñado para soporte técnico y aprendizaje interactivo.</p>
+                    <div class="flex gap-4">
+                        <a href="#hero" class="hover:text-brand-neonCyan transition">Inicio</a>
+                        <a href="#cpu" class="hover:text-brand-neonCyan transition">Hardware</a>
+                        <a href="#os" class="hover:text-brand-neonPurple transition">Software</a>
+                    </div>
+                </div>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- BOTÓN VOLVER ARRIBA -->
+    <a href="#hero" class="fixed bottom-6 right-6 p-3 bg-brand-electricBlue hover:bg-brand-electricBlue/80 text-white rounded-full shadow-lg hover:scale-110 transition z-50">
+        <i class="fa-solid fa-arrow-up"></i>
+    </a>
+
+    <!-- JAVASCRIPT DE INTERACTIVIDAD -->
+    <script>
+        // Toggle del menú lateral móvil
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        // Filtro rápido del Índice Lateral
+        function filterIndex() {
+            const input = document.getElementById('index-search').value.toLowerCase();
+            const items = document.getElementsByClassName('index-item');
+
+            for (let i = 0; i < items.length; i++) {
+                const text = items[i].textContent.toLowerCase();
+                if (text.includes(input)) {
+                    items[i].parentElement.style.display = "";
+                } else {
+                    items[i].parentElement.style.display = "none";
+                }
+            }
+        }
+
+        // Buscador Principal de Contenidos del Manual (Filtro Dinámico de Tarjetas)
+        function searchContent() {
+            const input = document.getElementById('main-search').value.toLowerCase();
+            const sections = document.querySelectorAll('.tech-section');
+
+            sections.forEach(section => {
+                const sectionText = section.textContent.toLowerCase();
+                if (sectionText.includes(input)) {
+                    section.style.display = "";
+                    // Suave resaltado visual al encontrar coincidencia
+                    section.classList.add('border-brand-neonCyan/30');
+                } else {
+                    section.style.display = "none";
+                    section.classList.remove('border-brand-neonCyan/30');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
